@@ -1,170 +1,134 @@
-# 最中幻想 · craftmine world
+# Craftmine World · 最中幻想
 
-**当前 Windows 测试版：`0.14.4-preview.22`。** 基于原 PI Desktop，支持四个示例世界、28 个内置素材条目、兼容素材直接加入、受支持的对象编辑和世界模板分享。已有世界游玩、素材直接加入和模板复制无需连接 AI；自然语言创作使用玩家自己的模型连接。F2 打开对话，Esc 暂停、切换世界或保存退出。
+**Perhaps a new way to play.**
 
-[当前 Windows 交付与开始使用](docs/CURRENT_WINDOWS_DELIVERY.md) · [首次创作指南](docs/FIRST_CREATION_QUICKSTART_2026-09-13.md) · [本轮完整交付与实测](docs/FIRST_CREATION_COMPLETION_DELIVERY_2026-09-14.md) · [新玩家测试与记录](docs/FIRST_CREATION_PLAYER_EVALUATION_2026-09-13.md) · [Windows 客户端构建说明](desktop/README.md)。
+English · [简体中文](README.zh-CN.md)
 
-本机成品目录为 `D:/Craftmine Releases/FirstCreation-preview22-20aad1fb`，双击其中的 `START-PLAYER-PREVIEW.cmd`；完整 ZIP 在同目录旁，约 **1.13 GB**，解压后约 **2.21 GB**。程序固定于源码 `20aad1fb`，附带三个可复用世界模板及中文说明。其他玩家需取得完整 ZIP；本页没有公开下载链接。
+> An open world? How open is your imagination?
 
-本版实际成品已通过“加入博美 → 放置并修改树木 → 保存重开 → 导出模板 → 独立档案导入游玩并重开”的完整自动验证，模型调用为 0。侧边栏提供“首次创作指引”，等待时显示实际阶段与耗时。真人首次使用及干净外部 Windows 测试仍待执行。
+What if making a game were part of playing it?
 
-本轮合并到本地 `main`，未自动推送或修改远程设置。GitHub 默认分支上次于 2026-09-13 核对为 `master`；远程源码请明确选择 [main](https://github.com/snowsnow0926/craftmine-world/tree/main)，本地新增提交需后续发布才会出现在 GitHub。preview.21 与[上一轮交付记录](docs/PLAYER_LIBRARY_DELIVERY_2026-09-13.md)保留为历史基线。
+Craftmine World brings AI into the world you play in. Start with a blank canvas—a 3D world, a top-down 2D scene, or a side-scrolling 2D level—and describe what you imagine. A tree becomes a forest. A quiet clearing becomes a monster arena. Ask for a companion, a sword, or a new rule, then keep playing as your world grows.
 
-preview.20 的 [复盘](docs/TWO_WORLD_PREVIEW20_RETROSPECTIVE_2026-09-13.md)、[双世界说明](docs/TWO_WORLD_PLAYER_GUIDE.md) 和 [收敛方案](docs/TWO_WORLD_SIMPLIFICATION_PLAN_2026-09-13.md) 保留为历史资料。2026-09-10 的 `8276b45` 四底座客户端同样是历史快照，见 [当时验收范围](docs/dispatch-reports/plan-loop/827-package/REPORT.md) 和 [Git 归档说明](docs/GIT_CLOSEOUT_2026-09-10.md)。**下文是早期独立 Web 运行器资料，不是当前 Windows 客户端操作或模型预算约定。** Windows 玩家请从当前交付页开始。
+Use text or voice to express an idea. AI finds reusable assets or creates new content, checks the changes, and brings them into your world. Our ambition is the feeling of speaking things into existence: **less distance between imagining a game, making it, and playing it.**
 
-从一个能走动的空白 3D 世界开始，用自然语言逐步创造内容。
+[Get started](#get-started) · [How creation works](#how-creation-works) · [Build from source](#build-from-source) · [Licensing](#licensing)
 
-**本地创作 Alpha 0.8：把自己的素材变成世界里可运行的创作。** 支持本地图片与静态 GLB、固定版本、外观替换、带源码与素材的完整作品迁移。保留自然语言源码生成、模块记忆、长期约定、差异试玩与有限自动修复。
+## The current demo
 
-## 启动
+**Windows x64 · `0.14.4-preview.27` · Portable ZIP**
 
-在 Windows 中双击根目录的 `start.cmd`，保持启动窗口打开，然后用 Chrome 或 Edge 打开：
+Craftmine extends the existing **PI Desktop** interface with playable worlds, a reusable asset library, and an AI creation workflow. **Godot** runs the worlds; bundled **Blender** supports model creation in the background. The latest complete playtest focuses on the blank 3D world. The repository also includes top-down and side-view 2D bases; their capabilities and test coverage differ.
 
-**[http://127.0.0.1:8787](http://127.0.0.1:8787)**
+| Experience | Available today |
+| --- | --- |
+| Start playing | Open an example world or create an independent copy of a saved world template. |
+| Start creating | Open a blank 3D world and describe the content or gameplay you want. |
+| Speak your idea | Use an available Windows speech recognizer to create an editable text draft. |
+| Reuse what exists | Search 34 asset entries across 41 versions, with four complete reference worlds. |
+| Keep your progress | Save worlds, retain compatible state across updates, and reopen them later. |
+| Share a starting point | Save a world to the local library, export a template ZIP, and create another world from it. |
+| Choose your AI | Connect your own model service through PI, or configure a separately installed Codex CLI. |
 
-也可以在根目录运行：
+The latest real DeepSeek playtest built and played this sequence in one blank world:
 
-```sh
-node app/server.mjs
+**Tree → flowers and grass → monsters → sword → giant monster trial → AK47.**
+
+The test checked visible objects, enemy attacks, melee damage, gunfire, reloading, weapon switching, saving, and reopening. Six creation turns took about **17 minutes 31 seconds** in that run; this is an observed result, not a latency promise. See the [acceptance report](docs/DEMO_PREVIEW27_DELIVERY_ZH.md) for the configuration, failures, fixes, and evidence limits.
+
+## Get started
+
+### With a demo package
+
+1. Obtain the complete Windows portable ZIP from the maintainer. GitHub's **Code → Download ZIP** downloads source, not the ready-to-run application.
+2. Extract the entire package, then run `START-PLAYER-PREVIEW.cmd`. Keep the executable and its adjacent resources together.
+3. Open an example, or choose **New world → 3D creation world → blank start**. Labels follow the selected UI language and version.
+4. To create with AI, connect your own provider and select a model in settings. Credentials are not included in the package; model usage belongs to your own account.
+5. Describe one change, wait for it to be checked and applied, then return to the world to try it.
+
+Playing existing worlds and using supported library/template actions do not require an AI request. In the 3D creation world, **WASD** moves, **E** interacts, and **F2** opens the creation conversation. Other controls follow the active world's on-screen instructions. Voice input requires microphone permission and the corresponding Windows speech language.
+
+The supplied `examples/deepseek-six-step-playtested.zip` reproduces the six-step world without running those model requests again. Import it from the world entry screen and create a copy. It includes saved playtest progress.
+
+See [current Windows delivery](docs/CURRENT_WINDOWS_DELIVERY.md) for the package filename, checksum, profile behavior, and how to continue an older preview.
+
+### A first creation session
+
+Send these one at a time, trying each change before continuing:
+
+```text
+I'd like a tree.
+Add some flowers and grass on the ground.
+Create some monsters.
+Give me a sword.
+I'd like a monster-hunting fight. Add a giant monster.
+Give me an AK47.
 ```
 
-需要 Node.js 22 或更新版本。生成或导入代码玩法、导入素材还需要 Playwright 与 Chrome／Edge，用于独立后台检查；本机已有这些运行库及已登录的 Codex CLI，查找方式见下文。其他电脑需要先安装 Codex CLI，并在本机终端执行 `codex login`。模型请求使用已登录账号的额度，生成需要联网；游戏和存档保存在本机。
+Then make it your own: change the setting, add a companion, tune the encounter, or invent a different goal. Save useful results to the library so the next world can build on them.
 
-页面提示“另一个窗口正在使用此项目”时，关闭另一个工作台，等待约 15 秒后刷新。如果本地服务已经启动，直接打开地址即可。
+## How creation works
 
-## 第一次体验
+**Describe → inspect the world → search reusable assets → create or adapt → check → apply → play.**
 
-1. 点击“进入世界”，WASD 移动，鼠标环顾，Space 跳跃，Shift 冲刺。
-2. 按 T 打开对话，或直接在右侧输入：**我想要有树**。
-3. 发送后可回到世界继续走动；真实生成任务会显示阶段，并可取消。
-4. 候选就绪后，可先“查看变化与预览”，在独立副本里试玩；再点击“应用并进入世界”。系统先保存原世界最新进度，再载入新场景。
-5. 靠近并将准星对准树干，按 T，输入：**把这棵树变高一点**。也可在“素材”工作区选中对象。
-6. “开发”工作区可查看实际执行记录、生成的场景内容，以及准备恢复此前的场景版本。
+The agent examines the current world and searches relevant assets, including their interfaces and dependencies. Suitable objects or gameplay components can be reused; new ideas can require code or a Blender model. In automatic mode, eligible changes are applied after their checks pass. Other flows present an installation proposal or candidate for the player to review.
 
-Esc 释放鼠标。浏览器不允许鼠标锁定时，按住画面拖动仍可环顾。“只讨论”不会改变世界；执行期间的讨论会先记录，当前任务结束后可继续发送。
+Generating a response, installing an asset, passing a check, and updating the playable world are distinct steps. The result panel shows their progress. Speed and success depend on the model, service availability, the request, and available assets. Compatible state is preserved; incompatible changes can require repair before application.
 
-对话框下方的“创作方向与长期约定”可保存世界方向和特定对象的要求，长对话后仍供助手读取。已应用需求自动保存原文与来源版本；开发记录可查看每次实际读取的上下文。检查失败最多自动修复两次，共用 240 秒总时限。详见 [Alpha 0.7 使用与验收](docs/ALPHA_0_7.md)。
+This preview focuses on local creation and local reuse. A public community marketplace, shared online discovery, and multiplayer creation are future directions. The six-step test does not establish that every model or every open-ended request will succeed.
 
-## 创作记忆与玩法
+## Build from source
 
-- 花草支持细茎、彩色花瓣、薄叶片和小数尺寸，默认可穿行。可以说“在树旁来点小花和草”。旧版砖花需要生成修复候选后应用，新渲染不会擅自改写存档中的旧定义。
-- **素材与记忆**：应用成功后自动记住对象、内置玩法配置与含源码的完整创作。选择历史版本 → “复用到世界” → 应用候选，不需要再请求模型。LLM 在下一次创作时也会检索真实模块定义，开发记录显示读取与引用了哪些记忆。
-- 修改实例会保存新模块版本；已有实例嵌入自己的定义，不会随记忆库的更新一起改变。删除世界中的对象也不会删除库中的成果。
-- 模块可以单独导出、导入另一个兼容的本地项目。模块库目前在每个项目本机保存，还没有共享社区搜索。
-- 可以说“增加 100 点生命值”“增加射击和一个 60 点血量的训练靶”“增加近战剑”。运行器已实现血条、受伤、死亡复活、弹匣、换弹、冷却、射线遮挡和目标伤害。**1** 装备枪、**2** 装备剑、**左键**攻击、**R** 换弹、**F** 近战、死亡后 **Enter** 复活。
-- 可以说“做一扇能按 E 开关的滑门，旁边放一个弹跳板”。模型会编写源码，后台检查通过才形成候选；靠近并瞄准物体后按 **E** 或点击“互动”。源码可以改变对象、施加玩家冲量、显示提示和增减物品，受权限、边界与执行限时约束。
-- 要把对象连同源码一起复用，选择“完整创作 · 含源码”卡片，或说“再来一扇之前记住的门”。副本拥有独立身份和初始状态，源码在新位置继续运行；普通“对象”卡片复用几何与组件。
-- “当前世界 · 玩法”中的完整创作支持切换此实例版本和卸载。兼容的开关、偏移、血量与库存随存档保留；卸载后恢复历史世界可找回实例进度。不兼容的状态格式变更会拒绝应用，保留原世界。
-
-## 使用自己的素材
-
-在“素材与记忆”中导入 PNG、JPEG 或静态 GLB，实际检查通过后可以预览、选择版本和导出。选择世界对象，再在素材卡片点击“用于所选对象”，或告诉助手“把这扇门换成我导入的某某门面”。外观替换先形成候选，保留对象身份、碰撞、源码和兼容进度；新版素材不会自动改动旧实例。
-
-原始文件最大 8 MiB，图片单边最大 2,048 像素；GLB 需要内嵌资源，目前支持静态网格和基础贴图。动画、蒙皮与压缩扩展需先转换，光照不是完整 PBR。素材世界需要 WebGL。详细操作与容量见 [Alpha 0.8](docs/ALPHA_0_8.md)。
-
-## 存档与恢复
-
-新项目默认保存在根目录的 `.craftmine/`，包含版本、对象、位置、任务记录、对话与模块索引。模块定义保存在 `modules/<id>/<version>.json`，素材原始版本保存在 `assets/<id>/<version>.json`。位置每约 3 秒自动保存，应用候选时立即读取最新位置并备份。场景回退与恢复完整存档分别处理。
-
-- 右上角“导出存档”导出当前场景、源码、最新位置和兼容的生命值／弹药／目标／代码玩法状态。实际使用的素材文件及固定版本会一起打包；不包含整个历史模块库、对话或项目约定。可在记忆库中单独导出创作及其所需素材。
-- “开发 → 本地数据与完整存档”中可以导入；导入先形成候选，应用前备份当前世界。
-- 游戏更新加载失败时恢复旧窗口；连接中断而无法核对应用状态时，提示刷新后从本地已确认版本恢复。
-
-不要删除 `.craftmine/` 来更新程序；重要作品请主动导出备份。
-
-## 可选配置
-
-配置通过启动 Node 进程的环境变量传入，[.env.example](.env.example) 给出不含密钥的例子；它不会被自动加载。更省事的做法是把变量写进数据目录的 `secrets.json`（默认 `.craftmine/secrets.json`），服务启动时自动读取：该目录已被 git 忽略，也不进入源码归档，环境变量优先于文件。
-
-| 变量 | 用途 |
-| --- | --- |
-| `CRAFTMINE_PORT` | 默认 `8787` |
-| `CRAFTMINE_MODEL_PROVIDER` | `deepseek` 或 `codex`；未设置时按是否配置 DeepSeek 密钥推断 |
-| `CRAFTMINE_DEEPSEEK_API_KEY` | DeepSeek 官方 API 密钥，只在服务端进程读取 |
-| `CRAFTMINE_MODEL` | 可选模型 ID；DeepSeek 默认 `deepseek-v4.1-flash-expires-on-0910` |
-| `CRAFTMINE_MAX_TOKENS` | 单次生成的最大输出 token，默认 `32000` |
-| `CRAFTMINE_CODEX_PATH` | 指定本机 `codex.exe`，通常会自动找到 |
-| `CRAFTMINE_DATA_DIR` | 为另一个独立本地数据目录启动项目 |
-
-例如 PowerShell 中更换端口：
+For the Windows application, use **Node.js 24**, **pnpm 11**, and the **Rust MSVC toolchain with Visual Studio C++ Build Tools**. Players using the complete package do not need these development tools.
 
 ```powershell
-$env:CRAFTMINE_PORT = '8788'
-node app/server.mjs
+git clone --branch main https://github.com/snowsnow0926/craftmine-world.git
+cd craftmine-world
+pnpm -C vendor/pi-desktop install --frozen-lockfile
 ```
 
-默认使用 DeepSeek 官方 API：需要 `CRAFTMINE_DEEPSEEK_API_KEY`，模型名可配置，思考模式关闭，JSON Schema 随提示一起发送、结构由本地校验与修复循环兜底。也可以设置 `CRAFTMINE_MODEL_PROVIDER=codex` 复用 Codex CLI 的本机登录和结构化输出能力，见[官方非交互执行说明](https://learn.chatgpt.com/docs/non-interactive-mode)。两种方式都不会把密钥或登录凭据放进页面、场景或导出存档。
+Prepare the pinned Godot, Blender, and MinGit inputs described in [desktop/README.md](desktop/README.md), then build from a clean checkout:
 
-## 开发与验证
-
-```sh
-npm test
-npm run test:browser
-npm run test:live
-npm run test:behaviors
-npm run test:code-world
-npm run test:live-code
-npm run test:creations
-npm run test:creation-ui
-npm run test:live-creation
-npm run test:repair
-npm run test:repair-cancel
-npm run test:live-repair
-npm run test:review
-npm run test:context
-npm run test:live-context
-npm run test:assets
-npm run test:asset-world
-npm run test:asset-packages
-npm run test:live-assets
+```powershell
+powershell -NoProfile -File desktop/build-client.ps1 `
+  -GodotCache '<absolute Godot cache directory>' `
+  -BlenderCache '<absolute Blender cache directory>' `
+  -GitArchive '<absolute MinGit ZIP path>'
 ```
 
-核心测试仅需 Node.js。浏览器测试需要 Playwright 和 Chrome／Edge；本机可使用已提供的 Playwright 运行库，其他环境可安装 Playwright，或用 `PLAYWRIGHT_MODULE_PATH` 指定模块位置。`CRAFTMINE_BROWSER` 可指定浏览器路径。
+The build creates `desktop/build/releases/<commit>-<id>/` with the unpacked application and evidence. Portable ZIP export is a separate step. Use the build guide for exact input hashes and commands. Root `npm start` starts the **legacy Web runner**, not PI Desktop.
 
-`test:live` 会实际请求模型，以独立的旧版场景夹具验证花草修复、树记忆复用和玩法生成。需要检查个人世界的只读副本时，可运行 `node tests/live-memory.mjs --repair-current`，仍不写入个人世界。普通浏览器测试使用人工场景夹具，不计为 LLM 验收。所有测试数据在独立的 `test-results/` 下。
+| Directory | Responsibility |
+| --- | --- |
+| `vendor/pi-desktop/` | PI-based desktop shell, agent runtime, native host, and Craftmine domain service. |
+| `plugins/craftmine-world/` | Creation tools, checks, application flow, and asset reuse. |
+| `desktop/godot/` | World bases, runtime bridges, components, and engine tooling. |
+| `desktop/blender/` | Blender integration, Python adapter, and native broker. |
+| `desktop/delivery/` | Packaging, provenance, license inventories, and delivery checks. |
+| `app/`, `world-workshop-3d/` | Earlier Web runner and prototype, retained as separate historical implementations. |
+| `tests/`, `docs/` | Tests, design decisions, player guides, and acceptance evidence. |
 
-**测试不抢占鼠标：**默认浏览器验收使用独立 headless 进程、禁用 Pointer Lock，通过页面脚本和 HTTP 检查，不发送鼠标键盘输入。旧的输入操作测试已加显式运行保护，不属于默认入口。参见 `AGENTS.md`。
+A local CPU smoke check for the recent creation fixes:
 
-- [Alpha 0.4 设计与验证记录](docs/ALPHA_0_4.md)
-- [Alpha 0.5 源码玩法与验收](docs/ALPHA_0_5.md)
-- [Alpha 0.6 完整创作记忆与验收](docs/ALPHA_0_6.md)
-- [Alpha 0.7 连续创作与独立试玩](docs/ALPHA_0_7.md)
-- [M3.1 自动修复与失败记录](docs/M3_REPAIR.md)
-- [M3.2 候选差异与独立试玩](docs/M3_PREVIEW.md)
-- [M3.3 长期方向、需求与运行上下文](docs/M3_CONTEXT.md)
-- [Alpha 0.8 自有素材、源码玩法与完整作品迁移](docs/ALPHA_0_8.md)
-- [M4 素材库、世界绑定与验收记录](docs/M4_ASSETS.md)
-- [真实模型生成的滑门与弹跳板演示](examples/door-and-bounce.save.json)
-- [M5 完整可玩世界实施与验收计划](docs/M5_WORLD.md)
-- [最新建议计划：Windows 客户端与 PI-Desktop Harness 源码复用](docs/WINDOWS_CLIENT_REUSE_PLAN.md)
-- [玩家创作版本管理开发计划](docs/VERSION_MANAGEMENT_DEVELOPMENT_PLAN.md)（Git 历史、分支、应用与恢复）
-- [素材与作品库开发计划](docs/ASSET_LIBRARY_DEVELOPMENT_PLAN.md)（素材版本、作品复用与开源参考）
-- [玩家创作包、底座与复用开发计划](docs/CREATION_PACKAGE_DEVELOPMENT_PLAN.md)（七类内容、开发接口、打包与导出）
-- [创作社区与内容分发平台开发计划](docs/COMMUNITY_PLATFORM_DEVELOPMENT_PLAN.md)（网站与客户端、上传发布、审核与阶段上线）
-- [AI 创作效率与可靠性开发计划](docs/AI_CREATION_EFFICIENCY_DEVELOPMENT_PLAN.md)（思考模式、文档与 Skill、模块复用及四组对照）
-- [玩家产品体验与持续创作开发计划](docs/PLAYER_PRODUCT_EXPERIENCE_DEVELOPMENT_PLAN.md)（首次成功、参数调整、问题修复、玩法保护与好友试玩）
-- [沉浸游玩模式与造物主世界方案](docs/IMMERSIVE_PLAYER_AND_MAIN_WORLD_DEVELOPMENT_PLAN.md)（双模式、游戏内两级面板、专属主世界与言出法随）
-- [宣传定位与文案备忘](docs/PROMOTIONAL_VIDEO_POSITIONING_AND_COPY.md) / [宣传片内容与分镜草案](docs/PROMOTIONAL_VIDEO_STORYBOARD_DRAFT.md)（持续收集创意，区分用户主线与候选建议）
-- [Godot 原生运行与多目标交付长期计划](docs/NATIVE_RUNTIME_LONG_TERM_DEVELOPMENT_PLAN.md)（原生运行、中央嵌入、独立导出；暂不排期）
-- [上一版 Harness 项目开发计划书与实现记录](docs/HARNESS_DEVELOPMENT_PLAN.md)
-- [Codex、Claude Code 与 DeepSeek Harness 参考研究](docs/HARNESS_REFERENCE_RESEARCH.md)
-- [Harness 差距评估与优先级](docs/HARNESS_GAP_ASSESSMENT.md)
-- [Agent 分层与架构评估（2026-09-11）](docs/AGENT_LAYERS_ARCHITECTURE_REVIEW_2026-09-11.md)（L0–L4、文档差异、真实引擎诊断与修正顺序）
-- [C / D / L 愿望框架、模型分工与社区复用总体方案](docs/WISH_CDL_FRAMEWORK_AND_NORTH_STAR_PROPOSAL.md)（北极星、难度评估、小模型、社区检索与效果验证）
-- [创作循环：愿景、实测证据与决策记录](docs/CREATION_LOOP.md)
-- [历史目标与持续开发记录（已停止）](docs/CONTINUOUS_DEVELOPMENT.md)
-- [开发进度记录](docs/DEVELOPMENT_STATUS.json)
-- [新玩法代码运行接口与验证](docs/BEHAVIOR_RUNTIME.md)
-- [模块记忆设计方案](docs/MODULE_MEMORY_PLAN.md)
-- [Alpha 0.3 历史实现记录](docs/IMPLEMENTATION.md)
-- [产品想法](docs/PRODUCT_VISION.md)
-- [已确认的许可与商业授权方案](docs/LICENSING_STRATEGY.md)（正式许可适用待逐模块核对）
-- [早期产品梳理与开发计划（历史）](docs/DEVELOPMENT_PLAN.md)
+```powershell
+node --test tests/operator-world-session.test.mjs tests/world-publication-capture.test.mjs
+```
 
-## 项目基线
+Follow [AGENTS.md](AGENTS.md). Automated browser validation uses independent headless processes and separate profiles without taking over the user's mouse, keyboard, or pointer lock. Native and real-provider tests need their documented toolchains and explicit configuration.
 
-正式英文名为 **craftmine world**，中文名为 **最中幻想**，替代旧暂名「世界工坊 / World Workshop」。
+## Licensing
 
-`app/` 是新工作台主线。`world-workshop-3d/` 保留 0.2「林间起点」原型及原来的存档和卡带约定，新运行器复用其中的渲染与物理基础。`world-workshop-3d.zip` 是原始交接包。旧原型仍可单独打开，不与新项目的数据混用。
+Original project creation software uses **AGPL-3.0-only**. The explicitly listed original export runtime uses **MIT**. PI Desktop and its covered modifications retain **LGPL-3.0-or-later**; Blender and the Blender Python adapter retain their applicable **GPL** terms. Assets and other dependencies keep their own licenses.
 
-整体方向继续保留开发、游玩、素材三个工作区。持续扩展代码玩法接口、模块记忆与素材能力，再推进多人共创和社区发布。
+Read [LICENSE](LICENSE), the [scope and exceptions](LICENSING.md), and [third-party notices](THIRD_PARTY_NOTICES.md). Using the tool does not, by itself, make your original game AGPL-licensed. Code and assets actually included in an export still carry their applicable terms. A separate commercial license for eligible project-owned creation code can be discussed with the maintainer; it does not cover third-party rights.
+
+## More information
+
+- [Asset catalog and reuse plan](docs/EXISTING_ASSETS_AND_REUSE_FIRST_PLAN_2026-09-15_ZH.md)
+- [Current demo acceptance](docs/DEMO_PREVIEW27_DELIVERY_ZH.md)
+- [Windows build guide](desktop/README.md)
+- [Licensing explanation in Chinese](LICENSE.zh-CN.md)
+- [Legacy Web runner documentation](docs/legacy/WEB_RUNNER_ALPHA_0_8.zh-CN.md)
+- [Report a problem or propose an idea](https://github.com/snowsnow0926/craftmine-world/issues)
+
+Built on the work of PI Desktop, Godot, Blender, Kenney, and the open-source libraries and tools listed in the notices.
