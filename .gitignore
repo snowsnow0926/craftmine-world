@@ -7,4 +7,7 @@ __pycache__/
 !.env.example
 *.local.json
 desktop/build/
+# Local generated submission artifacts and the private reviewer credential.
+/output/
+评委用apikey.txt
 vendor/pi-desktop/apps/desktop/resources/plugins/craftmine.world/

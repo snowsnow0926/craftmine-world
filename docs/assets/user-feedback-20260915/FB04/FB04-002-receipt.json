@@ -1,0 +1,47 @@
+{
+  "id": "FB04-002",
+  "batch": "FB04",
+  "batch_time_user_provided": "2026-09-15 21:03:25 Asia/Shanghai",
+  "received_date": "2026-09-15（具体收件时分未提供）",
+  "recorded_at": "2026-09-15 21:06:09 +08:00",
+  "tested_package": "D:\\游戏测试\\2026年9月15日\\Demo-Submission-20260915-7c05af9e",
+  "title": "隐藏新建世界中目前无法创建的四类世界入口",
+  "raw_feedback": "新建世界的时候这几个世界现在都无法创建 给隐藏吧",
+  "user_report": "新建世界时，截图所指的几个世界目前都无法创建。",
+  "requested_types": [
+    "3D 第一人称",
+    "2D 挖掘沙盒",
+    "2D 横版",
+    "2D 俯视"
+  ],
+  "screenshot_observations": [
+    "图1：新建世界页面显示 GODOT_JOB_FAILED；名为11123的3D第一人称世界显示初始化失败。",
+    "图2：用户提供的局部截图列出3D第一人称、2D挖掘沙盒、2D横版、2D俯视四个选项。"
+  ],
+  "expectation": "新建世界时隐藏上述四类选项。",
+  "user_proposed_solution": "隐藏上述四类世界的创建入口。",
+  "occurred_at": "未提供",
+  "reproducibility": "用户报告四类均无法创建；具体尝试次数未提供。",
+  "impact": "玩家可见但无法创建的世界选项影响新建世界流程。",
+  "workaround": "未提供",
+  "status": "待讨论",
+  "discussion": "用户明确提出隐藏要求；当前仅收件记录，未执行开发。",
+  "related": "历史批次涉及世界创建失败；本条为本版本四类入口隐藏要求，独立记录。",
+  "other_context": "截图显示中文界面；实际游戏版本号、存档文件、截图拍摄时间未提供；未复核游戏。",
+  "evidence": [
+    {
+      "file": "FB04-002-01-world-creation-failed.png",
+      "source": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\codex-clipboard-55a085db-c8e4-43e9-9c74-3bcee8e379eb.png",
+      "sha256": "7B2B9B4B9FCB7A9BD8BD9058E3F7E58051B5109FF91642F4CA68A7752E11EF38",
+      "screenshot_time": "未提供"
+    },
+    {
+      "file": "FB04-002-02-world-types-to-hide.png",
+      "source": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\codex-clipboard-f7f38d32-c3ff-421a-be81-a0eb22886924.png",
+      "sha256": "C5E9F0403AFED7B66076C20B6D10B1372721F3B792DE874ECA2E9C4162BDC0F7",
+      "screenshot_time": "未提供"
+    }
+  ],
+  "collection_status": "收件已结束；用户表示“以上是这批需求”；已汇总至 USER_FEEDBACK_BATCH_004_2026-09-15.html。",
+  "updated_at": "2026-09-15 21:08:14 +08:00"
+}

@@ -1,0 +1,38 @@
+{
+  "id": "FB04-001",
+  "batch": "FB04",
+  "batch_time_user_provided": "2026-09-15 21:03:25 Asia/Shanghai",
+  "received_date": "2026-09-15（具体收件时分未提供）",
+  "recorded_at": "2026-09-15 21:05:00 +08:00",
+  "tested_package": "D:\\游戏测试\\2026年9月15日\\Demo-Submission-20260915-7c05af9e",
+  "title": "启动后黑屏，按 Esc 并继续游玩后才显示画面",
+  "raw_feedback": "启动后黑屏 然后esc 继续游玩才会出现画面",
+  "user_report": "启动后黑屏；按 Esc，再选择继续游玩后才出现画面。",
+  "screenshot_observations": [
+    "图1：黑色背景上显示已暂停菜单，含继续游玩选项。",
+    "图2：游戏场景、武器及界面已显示。"
+  ],
+  "expectation": "启动后正常显示游戏画面（依据反馈归纳）",
+  "workaround": "按 Esc 后选择继续游玩（用户报告）",
+  "occurred_at": "未提供",
+  "reproducibility": "未提供",
+  "status": "待讨论",
+  "related": "历史 FB02-001 同涉及黑屏；是否同一问题尚不确定，暂独立记录，待合并判断。",
+  "other_context": "平台、游戏内版本号、存档、启动步骤、截图拍摄时间未提供；未复核游戏。",
+  "evidence": [
+    {
+      "file": "FB04-001-01-paused-black-screen.png",
+      "source": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\codex-clipboard-ab6855e6-ebbe-4152-add4-f75d104a3ed1.png",
+      "sha256": "A7A47BBECE612A984BA1AF34F1B87162E7AC7BA1699D5869E63F921B3F5456DA",
+      "screenshot_time": "未提供"
+    },
+    {
+      "file": "FB04-001-02-scene-visible.png",
+      "source": "C:\\Users\\WINDOWS\\AppData\\Local\\Temp\\codex-clipboard-2fd8e93f-60cf-4946-b912-7b0df85810fa.png",
+      "sha256": "E119E5A8A0B1AE90F23A3D44A3CF033907520AF114A0FCEBB5F92E0C731964A9",
+      "screenshot_time": "未提供"
+    }
+  ],
+  "collection_status": "收件已结束；用户表示“以上是这批需求”；已汇总至 USER_FEEDBACK_BATCH_004_2026-09-15.html。",
+  "updated_at": "2026-09-15 21:08:14 +08:00"
+}
