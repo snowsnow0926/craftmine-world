@@ -1504,7 +1504,7 @@ export class GodotWorldViewHost {
     const children = window.contentView.children;
     if (!children.includes(instance.view)) window.contentView.addChildView(instance.view);
     instance.view.setBounds(rect);
-    raiseMainOverlay(window);
+    raiseMainOverlay(window, instance.view);
   }
 
   private detachView(view: WebContentsView): void {

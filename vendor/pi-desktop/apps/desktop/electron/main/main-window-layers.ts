@@ -34,9 +34,21 @@ export function setMainImmersion(window: BaseWindow, state: CraftmineImmersionSt
   syncMainInputFocus(window);
 }
 
-/** A newly attached world/candidate must stay underneath an already open overlay. */
-export function raiseMainOverlay(window: BaseWindow): void {
+/** Present a ready world above plugin chrome, keeping trusted overlays above it. */
+export function raiseMainOverlay(window: BaseWindow, presentedView?: WebContentsView): void {
   const owner = owners.get(window);
+  if (window.isDestroyed()) return;
+  if (presentedView && !backgroundViews.has(presentedView)) {
+    const children = window.contentView.children as WebContentsView[];
+    // A ready view can already be attached at index zero from startup staging.
+    // Attachment alone does not release that background position. Ignore the
+    // trusted renderer when checking order so ordinary geometry updates do not
+    // repeatedly move a world out from underneath an open overlay.
+    const foreground = children.filter(view => view !== owner?.renderer).at(-1);
+    if (children.includes(presentedView) && foreground !== presentedView) {
+      window.contentView.addChildView(presentedView);
+    }
+  }
   if (owner) setMainImmersion(window, owner.state);
   else syncMainInputFocus(window);
 }

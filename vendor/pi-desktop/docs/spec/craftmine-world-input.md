@@ -62,6 +62,16 @@ promotion releases that background designation. Disposal removes the native view
 World navigation also sets `focusOnNavigation: false`: Chromium's internal
 navigation focus cannot bypass the host's later displayed-owner handoff.
 
+Releasing the background designation also establishes foreground ordering.
+A restored current world or an explicitly displayed candidate may already be
+attached below the plugin's opaque placeholder. The native layer policy moves
+that displayed world above plugin chrome while retaining any trusted application
+overlay above it. Mere attachment is not evidence of visible composition. An
+unchanged layout report does not reorder correctly positioned native children;
+preparing background views cannot opt themselves into presentation or input.
+Restored fullscreen play must display the world without an Escape/Continue
+round trip. The existing focus policy remains the only input handoff authority.
+
 `cancelStaging(worldId)` only cancels an in-flight stage attempt for that world.
 It marks cancellation before runtime creation, aborts an owned runtime's pending
 startup request when present, and waits for that attempt's cleanup. It does not

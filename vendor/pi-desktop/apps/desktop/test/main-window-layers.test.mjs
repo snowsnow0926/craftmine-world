@@ -123,3 +123,13 @@ test('paintable staging stays behind the trusted UI and never owns input across 
  assert.deepEqual(f.window.contentView.children,[f.ui,pending]);assert.equal(mainInputContents(f.window),pending.webContents);
  assert.equal(f.calls.at(-1),'pending','only explicit promotion releases background ownership');
 });
+
+test('presentation cannot implicitly release staging or attach a foreign detached view',()=>{
+ const f=fixture(true);const pending=f.view('pending');
+ setMainViewBackground(pending,true);f.window.contentView.addChildView(pending,0);
+ raiseMainOverlay(f.window,pending);
+ assert.deepEqual(f.window.contentView.children,[pending,f.ui,f.world]);
+ const detached=f.view('detached');raiseMainOverlay(f.window,detached);
+ assert.equal(f.window.contentView.children.includes(detached),false);
+ assert.deepEqual(f.calls,[]);
+});

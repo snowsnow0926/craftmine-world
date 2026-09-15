@@ -11096,3 +11096,12 @@ session/world scope can reuse a successful measurement across tasks. The new
 task's complete reservation/settlement binding remains mandatory; permission,
 media, system/tool/body changes still fail closed. See
 [the cross-turn replay and native-loop cases](../../e2e/deepseek-cross-turn-measurement-20260915.md).
+
+## Restored fullscreen world presentation (FB04-001, 2026-09-15)
+
+Verify an already attached staging view is promoted above opaque plugin chrome
+when it becomes the current world or explicit candidate preview. Trusted
+overlays retain priority, background staging retains input exclusion, and stable
+layout reports cause no native reordering. Cold-launch a retained play profile
+before performing any pause/Continue or show-world workaround. See
+[the presentation regression and package scenario](../../e2e/fb04-restored-world-presentation-20260915.md).
