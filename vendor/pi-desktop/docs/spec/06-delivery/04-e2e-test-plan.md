@@ -11121,3 +11121,23 @@ overlays retain priority, background staging retains input exclusion, and stable
 layout reports cause no native reordering. Cold-launch a retained play profile
 before performing any pause/Continue or show-world workaround. See
 [the presentation regression and package scenario](../../e2e/fb04-restored-world-presentation-20260915.md).
+
+## Creation confirmation read recovery (2026-09-15)
+
+Submit one ordinary blank/example/template creation. After the host's durable
+receipt, make a confirmation list read fail with the exact known Rust read
+timeout, then return the same world ready. Verify pending preparation remains
+cancellable and the normal ready callback enters the original world with one
+creation submission and no implicit initialization retry.
+
+Cancel during the retry wait, and separately invalidate the mounted operation
+while a read is pending. Late completion must not enter a world or begin another
+read. Return a terminal initialization failure after a transient timeout and
+verify that its error and explicit preparation retry remain available. Unrelated
+errors and thrown strings must fail without retry. Existing lost-ACK handling
+retains its own explicit, identity-preserving recovery behavior.
+
+Run `tests/godot-create-form-retry-headless.mjs` only in its independent headless
+profile through page callbacks with pointer lock disabled and no physical input.
+Record real packaged import separately, without calling logic fixtures a native
+acceptance. See [the read-recovery contract](creation-confirmation-read-recovery.md).

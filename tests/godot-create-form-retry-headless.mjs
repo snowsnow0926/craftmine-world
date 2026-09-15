@@ -6,7 +6,7 @@ const f=globalThis.fixture={serial:0,calls:[],selected:'world-old',registered:fa
 const old={id:'world-old',title:'Original world',state:'ready'},draft=()=>({id:'world-new',title:f.request.title,state:f.state,creation:{operationId:'host-init-id',stage:'check',stages:[],progress:0,actions:['retry','details'],error:f.state==='failed'?{code:'CHECK_FAILED',message:'Check failed',recoverable:true}:null}});
 globalThis.__craftmineWorldBridge={onChanged:()=>()=>{},invoke:async(_p,channel,payload)=>{
  f.calls.push({channel,payload});
- if(channel==='world.list')return{activeWorldId:f.selected,worlds:[old,...(f.registered?[draft()]:[])]};
+ if(channel==='world.list'){if(f.registered&&f.readTimeouts>0){f.readTimeouts--;f.readFailures++;throw Error('Craftmine Rust request timed out');}return{activeWorldId:f.selected,worlds:[old,...(f.registered?[draft()]:[])]};}
  if(channel==='workbench.capabilities')return{};if(channel==='task.current')return null;
  if(channel==='world.createOptions')return{create:true,switch:true,createActions:true,bases:[{id:'creation-sandbox',label:'3D world',delivered:true,starters:[]}]};
  if(channel==='world.create'){
@@ -22,7 +22,7 @@ globalThis.__craftmineWorldBridge={onChanged:()=>()=>{},invoke:async(_p,channel,
  throw Error('UNEXPECTED:'+channel);
 }};
 function App(){const controller=useCraftmineWorlds('en'),[open,setOpen]=useState(true),[formKey,setFormKey]=useState(0);globalThis.controller=controller;f.remountForm=()=>setFormKey(value=>value+1);return <section data-open={open}>{open&&<WorldCreatePanel key={formKey} controller={controller} lang='en' onClose={()=>{f.closed++;setOpen(false)}} onCreated={async id=>{f.entered.push(id)}}/>}{controller.error&&<p role='alert'>{controller.error}</p>}</section>;}
-const root=createRoot(document.getElementById('root'));f.reset=mode=>{f.serial++;f.calls=[];f.entered=[];f.closed=0;f.selected='world-old';f.registered=false;f.state='failed';f.request=null;f.mode=mode;f.retryFails=false;f.switchFails=false;root.render(<App key={f.serial}/>);};f.reset('failed');`;
+const root=createRoot(document.getElementById('root'));f.reset=mode=>{f.serial++;f.calls=[];f.entered=[];f.closed=0;f.selected='world-old';f.registered=false;f.state='failed';f.request=null;f.mode=mode;f.retryFails=false;f.switchFails=false;f.readTimeouts=0;f.readFailures=0;root.render(<App key={f.serial}/>);};f.reset('failed');`;
 await require('esbuild').build({stdin:{contents:code,resolveDir:desktop,loader:'tsx'},outfile:path.join(out,'fixture.js'),bundle:true,platform:'browser',format:'iife',jsx:'automatic',define:{'process.env.NODE_ENV':'"production"'}});fs.writeFileSync(path.join(out,'index.html'),'<div id="root"></div><script src="fixture.js"></script>');
 const report={checks:[],errors:[],scope:'Actual React form/controller; finite host idempotency, registration and retry receipts; no native claim'};let browser;const check=(name,value)=>{assert.ok(value,name);report.checks.push(name);console.log(name);};
 try{
@@ -45,5 +45,19 @@ try{
  await page.evaluate(()=>{fixture.selected='world-old';fixture.switchFails=true;});await submit();await failed();check('failed original-world save blocks scoped retry and keeps the existing draft',await page.evaluate(()=>!fixture.calls.some(c=>c.channel==='world.creationRetry')&&fixture.registered&&controller.createAttempt.worldId==='world-new'));
  await page.evaluate(()=>{fixture.switchFails=false;fixture.retryFails=true;});await submit();await failed();
  await page.evaluate(()=>{const button=document.querySelector('[data-action=cancel-world-create]');button[Object.keys(button).find(key=>key.startsWith('__reactProps$'))].onClick();});await wait(()=>fixture.closed===1);check('Cancel after failed retry still cancels only the owned draft and restores the original world',await page.evaluate(()=>fixture.selected==='world-old'&&fixture.registered&&fixture.calls.filter(c=>c.channel==='world.creationCancel').every(c=>c.payload.worldId==='world-new')&&fixture.entered.length===0));
+ await page.evaluate(()=>fixture.reset('failed'));await name('Read timeout then ready');
+ await page.evaluate(()=>{fixture.state='ready';fixture.readTimeouts=1;});await submit();
+ await wait(()=>fixture.readFailures===1&&controller.busy);
+ check('confirmation timeout retains a cancellable pending operation instead of a terminal error',await page.evaluate(()=>controller.canCancelCreate&&controller.createAttempt.worldId==='world-new'&&!controller.error&&!!controller.notice));
+ await wait(()=>fixture.closed===1);
+ check('read timeout recovers into the same ready world without another create or initialization retry',await page.evaluate(()=>fixture.calls.filter(c=>c.channel==='world.create').length===1&&!fixture.calls.some(c=>c.channel==='world.creationRetry')&&fixture.entered.length===1&&fixture.entered[0]==='world-new'));
+ await page.evaluate(()=>fixture.reset('failed'));await name('Timeout then terminal check');
+ await page.evaluate(()=>{fixture.readTimeouts=1;});await submit();await failed();
+ check('a terminal build failure after read recovery retains ordinary retry without restarting initialization',await page.evaluate(()=>fixture.calls.filter(c=>c.channel==='world.create').length===1&&!fixture.calls.some(c=>c.channel==='world.creationRetry')&&fixture.entered.length===0&&controller.createAttempt.worldId==='world-new'&&controller.error.includes('Check failed')));
+ await page.evaluate(()=>fixture.reset('failed'));await name('Cancel pending read recovery');
+ await page.evaluate(()=>{fixture.state='ready';fixture.readTimeouts=1;});await submit();await wait(()=>fixture.readFailures===1&&controller.busy);
+ await page.evaluate(()=>{const button=document.querySelector('[data-action=cancel-world-create]');button[Object.keys(button).find(key=>key.startsWith('__reactProps$'))].onClick();});
+ await wait(()=>fixture.closed===1);
+ check('cancelling a pending read recovery does not enter the ready world or duplicate creation',await page.evaluate(()=>fixture.entered.length===0&&fixture.calls.filter(c=>c.channel==='world.create').length===1&&fixture.selected==='world-old'));
  check('no focus, pointer lock or page errors',await page.evaluate(()=>violations.length===0)&&report.errors.length===0);report.passed=true;
 }catch(error){report.error=String(error.stack??error);process.exitCode=1;}finally{await browser?.close();fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({out,passed:report.passed,error:report.error}));}
