@@ -16,7 +16,7 @@ const catalogFile = path.join(root, "desktop/godot/bases/base-catalog.json");
 const basesRoot = path.join(root, "desktop/godot/bases");
 const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), "r2-creation-"));
 
-test("the shipped catalog offers only delivered Godot bases and their templates", () => {
+test("the internal shipped catalog retains authored bases for existing saves", () => {
   const options = creation.readGodotCreateOptions({catalogFile, basesRoot});
   assert.deepEqual([...options.bases.map((base) => base.id)].sort(), ["creation-sandbox", "first-person", "mining-sandbox", "side-view", "top-down"]);
   assert.ok(options.bases.every((base) => base.delivered && base.templates.length >= (base.id === "creation-sandbox" ? 1 : 2)));
@@ -268,7 +268,7 @@ test("the panel coordinator serves Godot bases, creation and real world state", 
     save: async () => ({status: "persisted", receipt: {}}), checkpoint: async () => ({status: "persisted", receipt: {}})};
   const adapter = {allowedRoots: () => [], describe: async () => null, progress: async () => null, describeCandidate: async () => null};
   const factory = {
-    options: {create: true, createActions: true, bases: [{id: "top-down", baseVersion: "1.0.0", label: "2D 俯视", description: "d", delivered: true,
+    options: {create: true, createActions: true, bases: [{id: "creation-sandbox", baseVersion: "1.0.0", label: "Creation world", description: "d", delivered: true,
       templates: [{id: "blank", label: "空白", kind: "blank-start", description: "", delivered: true},
         {id: "sample", label: "Example", kind: "example", description: "", delivered: true, preview: "data:image/png;base64,example"}]}]},
     create: async (payload) => { forwarded.push(["create", payload]); return {id: "world-x", title: payload.title, state: "initializing", creation: {operationId: "o", stage: "project", stages: [], progress: 25, error: null, actions: ["details"]}}; },
@@ -287,14 +287,14 @@ test("the panel coordinator serves Godot bases, creation and real world state", 
   });
 
   const options = await coordinator.invoke("world.createOptions", {});
-  assert.deepEqual(options.bases.map((b) => b.id), ["craftmine-web/5", "top-down"]);
+  assert.deepEqual(options.bases.map((b) => b.id), ["craftmine-web/5", "creation-sandbox"]);
   assert.equal(options.createActions, true);
   assert.equal(options.bases[1].starters[0].id, "blank");
   assert.deepEqual(options.bases[0].starters.map(starter => starter.id), ["blank"], "Web cannot inherit Godot examples");
   assert.equal(options.bases[1].starters[1].preview, "data:image/png;base64,example");
   assert.equal(options.starters.find(starter => starter.id === "sample").preview, undefined, "large previews are sent once in the base catalog");
 
-  const created = await coordinator.invoke("world.create", {title: "小镇", baseId: "top-down", starterId: "blank"});
+  const created = await coordinator.invoke("world.create", {title: "小镇", baseId: "creation-sandbox", starterId: "blank"});
   assert.equal(created.id, "world-x");
   assert.equal(forwarded.some(([channel]) => channel === "create"), true);
   assert.ok(forwarded.some(([channel, value]) => channel === "world.open" && value.id === created.id));
@@ -308,4 +308,42 @@ test("the panel coordinator serves Godot bases, creation and real world state", 
   assert.equal(list.worlds.find((world) => world.id === "web1").state, undefined);
   assert.equal(list.activeWorldId, "godot1");
   assert.deepEqual(statusReads, [{worldId: "godot1", options: {resume: false}}]);
+});
+
+test("new-world options hide unsupported choices without changing the internal catalog or old world rows", async () => {
+  const catalog = creation.readGodotCreateOptions({catalogFile, basesRoot});
+  const before = structuredClone(catalog);
+  const hidden = ["first-person", "mining-sandbox", "side-view", "top-down"];
+  const web = {id: "craftmine-web/5", label: "Web", delivered: true};
+  const oldWorlds = hidden.map((baseId, index) => ({id: `old-${index}`, title: `Saved ${baseId}`, baseId, runtimeKind: "godot"}));
+  const forwarded = [];
+  const factory = {options: catalog, status: async () => ({state: "ready", creation: null})};
+  const coordinator = createGodotPanelCoordinator({
+    host: {}, adapter: {}, selection: async () => "old-0", creation: () => factory,
+    invoke: async (channel, payload) => {
+      forwarded.push({channel, payload});
+      if (channel === "world.createOptions") return {bases: [web, ...hidden.map(id => ({id, delivered: true}))], starters: [{id: "blank", delivered: true}]};
+      if (channel === "world.list") return {activeWorldId: "old-0", worlds: oldWorlds};
+      return {ok: true};
+    },
+  });
+  const visible = await coordinator.invoke("world.createOptions");
+  assert.deepEqual(visible.bases.map(base => base.id), [web.id, "creation-sandbox"]);
+  assert.deepEqual(visible.bases[1].starters.map(starter => starter.id), ["blank", "promo-mainline", "promo-flight", "promo-rain", "promo-city"]);
+  assert.deepEqual(visible.bases[0].starters.map(starter => starter.id), ["blank"]);
+  assert.deepEqual(catalog, before, "visibility must not mutate compatibility data");
+  const list = await coordinator.invoke("world.list");
+  assert.equal(list.activeWorldId, "old-0");
+  assert.deepEqual(list.worlds.map(world => [world.id, world.base.id, world.state]), hidden.map((id, index) => [`old-${index}`, id, "ready"]));
+  const copy = {id: "old-0", title: "Copy of old save"};
+  await coordinator.invoke("world.copy", copy);
+  assert.deepEqual(forwarded.at(-1), {channel: "world.copy", payload: copy});
+});
+
+test("the legacy-only options fallback cannot reintroduce hidden creation entries", async () => {
+  const coordinator = createGodotPanelCoordinator({host: {}, adapter: {}, selection: async () => null,
+    invoke: async () => ({create: true, bases: ["first-person", "craftmine-web/5", "top-down", "side-view", "mining-sandbox"].map(id => ({id})), starters: []}),
+  });
+  const visible = await coordinator.invoke("world.createOptions");
+  assert.deepEqual(visible.bases.map(base => base.id), ["craftmine-web/5"]);
 });

@@ -17,6 +17,12 @@ type Options = {
     apply: (worldId: string) => Promise<{status: string; reason?: string}>;
   };
 };
+
+// These authored bases remain readable and recoverable for existing saves, but
+// are not offered as new-world choices in the player demo.
+const HIDDEN_NEW_WORLD_BASES = new Set(["first-person", "mining-sandbox", "side-view", "top-down"]);
+const offeredNewWorldBase = (base: {id?: unknown}) => !HIDDEN_NEW_WORLD_BASES.has(String(base.id ?? ""));
+
 /** Authenticated panel actions may choose a world; they never supply runtime data or paths. */
 export function createGodotPanelCoordinator(options: Options) {
   let switching = false;
@@ -31,19 +37,20 @@ export function createGodotPanelCoordinator(options: Options) {
     return value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
   };
   const currentCreation = () => options.creation?.() ?? null;
-  /** The legacy base stays available; the Godot bases come from the catalog. */
+  /** Filter presentation only; internal catalog entries still serve existing saves. */
   const mergedCreateOptions = async (): Promise<Record<string, unknown>> => {
     const legacy = await legacyCreateOptions();
     const creation = currentCreation();
-    if (!creation) return legacy;
-    const legacyBases = Array.isArray(legacy.bases) ? legacy.bases as Array<Record<string, unknown>> : [];
+    const legacyBases = (Array.isArray(legacy.bases) ? legacy.bases as Array<Record<string, unknown>> : []).filter(offeredNewWorldBase);
+    if (!creation) return {...legacy, bases: legacyBases};
+    const godotBases = creation.options.bases.filter(offeredNewWorldBase);
     return {
       ...legacy,
       create: true,
       createActions: true,
       bases: [
         ...legacyBases.map(base => ({...base, starters: Array.isArray(base.starters) ? base.starters : (Array.isArray(legacy.starters) ? legacy.starters : [])})),
-        ...creation.options.bases.map(base => ({
+        ...godotBases.map(base => ({
           id: base.id, label: base.label, description: base.description, delivered: base.delivered,
           starters: base.templates.map(template => ({
             id: template.id, label: template.label, description: template.description, delivered: template.delivered,
@@ -53,7 +60,7 @@ export function createGodotPanelCoordinator(options: Options) {
       ],
       starters: [
         ...(Array.isArray(legacy.starters) ? legacy.starters : []),
-        ...(creation.options.bases[0]?.templates ?? []).map(template => ({
+        ...(godotBases[0]?.templates ?? []).map(template => ({
           id: template.id, label: template.label, description: template.description, delivered: template.delivered,
           kind: template.kind, source: template.source, initialState: template.initialState,
         })),
